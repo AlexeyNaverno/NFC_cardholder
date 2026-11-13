@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 concurrency:
   group: build-${{ github.ref }}
@@ -33,41 +34,50 @@ jobs:
           set -o pipefail
           ./gradlew --no-daemon --console=plain assembleDebug testDebugUnitTest lintDebug 2>&1 | tee /tmp/build.log
 
-      - name: Surface build errors as check annotations
+      - name: Publish diagnostics on failure
         if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           touch /tmp/build.log
-          grep -E "^e: |error: |Caused by: |What went wrong:" /tmp/build.log | head -30 | while IFS= read -r line; do
+          {
+            echo "== gradle console (tail) =="
+            tail -n 150 /tmp/build.log
+            echo
+            echo "== junit failures =="
+            python3 - <<'PY' || true
+import glob, xml.etree.ElementTree as ET
+paths = sorted(glob.glob("app/build/test-results/*/*.xml"))
+print("result files:", paths)
+for path in paths:
+    try:
+        root = ET.parse(path).getroot()
+    except Exception as exc:
+        print("cannot parse", path, exc)
+        continue
+    for case in root.iter("testcase"):
+        for failure in list(case.iter("failure")) + list(case.iter("error")):
+            print("%s > %s: %s" % (
+                case.get("classname"),
+                case.get("name"),
+                (failure.get("message") or "").replace("\n", " ")[:400],
+            ))
+            print((failure.text or "")[:2000])
+PY
+          } > /tmp/diag.txt || true
+          echo "::error::diag: build.log lines=$(wc -l < /tmp/build.log) FAILED_hits=$(grep -c ' FAILED' /tmp/build.log || true)"
+          grep -E "^e: |error: | FAILED|Assertion|expected" /tmp/diag.txt | head -40 | while IFS= read -r line; do
             echo "::error::${line}"
           done
-          grep -A 12 "What went wrong:" /tmp/build.log | head -40 | while IFS= read -r line; do
-            echo "::error::${line}"
-          done
-          grep -A 3 " FAILED" /tmp/build.log | head -60 | while IFS= read -r line; do
-            echo "::error::${line}"
-          done
-          python3 - <<'PY' || true
-          import glob, xml.etree.ElementTree as ET
-          for path in sorted(glob.glob("app/build/test-results/testDebugUnitTest/*.xml")) + \
-                      sorted(glob.glob("app/build/outputs/**/test-results/**/*.xml", recursive=True)):
-              try:
-                  root = ET.parse(path).getroot()
-              except Exception:
-                  continue
-              for case in root.iter("testcase"):
-                  for failure in list(case.iter("failure")) + list(case.iter("error")):
-                      name = "%s > %s" % (case.get("classname"), case.get("name"))
-                      message = (failure.get("message") or "").replace("\n", " ")
-                      print("::error::%s :: %s" % (name, message[:300]))
-          PY
+          RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          BODY="$(printf 'Diagnostics for %s\n\n```text\n%s\n```\n' "$RUN_URL" "$(tail -c 50000 /tmp/diag.txt)")"
+          EXISTING="$(gh issue list --state open --search 'CI diagnostics in:title' --json number --jq '.[0].number' 2>/dev/null || true)"
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY" || true
+          else
+            gh issue create --title "CI diagnostics" --body "$BODY" || true
+          fi
           exit 1
-
-      - name: Upload debug APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-debug
-          path: app/build/outputs/apk/debug/*.apk
-          if-no-files-found: error
 
       - name: Upload test reports on failure
         if: failure()
@@ -75,5 +85,14 @@ jobs:
         with:
           name: reports
           path: |
-            app/build/reports/tests
-            app/build/reports/lint-results-debug.html
+            app/build/reports/tests/
+            app/build/reports/lint*
+            app/build/test-results/
+          if-no-files-found: ignore
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
