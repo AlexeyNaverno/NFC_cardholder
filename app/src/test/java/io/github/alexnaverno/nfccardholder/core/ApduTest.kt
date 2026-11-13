@@ -92,7 +92,9 @@ class ApduTest {
         assertTrue(Apdu.isValidAid("A000000000"))
         assertTrue(Apdu.isValidAid("D2760000850101"))
         assertTrue(Apdu.isValidAid("D27600008501010203040506070809"))
-        assertFalse(Apdu.isValidAid("D2760000850101020304050607080910"))
+        // Sixteen bytes is the maximum, seventeen is rejected.
+        assertTrue(Apdu.isValidAid("D2760000850101020304050607080910"))
+        assertFalse(Apdu.isValidAid("D276000085010102030405060708091011"))
         assertFalse(Apdu.isValidAid("ZZ760000850101"))
         assertFalse(Apdu.isValidAid("D276000085010"))
         assertFalse(Apdu.isValidAid(null))
