@@ -120,7 +120,7 @@ object EmulationControl {
         val emulation = cardEmulation(application)
         if (emulation != null) {
             try {
-                emulation.unregisterAidsForService(
+                emulation.removeAidsForService(
                     service(application),
                     CardEmulation.CATEGORY_OTHER
                 )

@@ -202,12 +202,13 @@ object TagCopier {
         val ultralight = MifareUltralight.get(tag) ?: return
         record.mifareType =
             if (ultralight.type == MifareUltralight.TYPE_ULTRALIGHT_C) "Ultralight C" else "Ultralight"
-        record.ultralightPages = ultralight.pageCount
         val memory = StringBuilder()
         try {
             ultralight.connect()
+            val pages = pageCount(ultralight)
+            record.ultralightPages = pages
             var page = 0
-            while (page + MifareUltralight.PAGE_SIZE <= record.ultralightPages) {
+            while (page + MifareUltralight.PAGE_SIZE <= pages) {
                 progress(CopyStep.ULTRALIGHT, page)
                 val data = try {
                     ultralight.readPages(page)
@@ -232,6 +233,29 @@ object TagCopier {
         }
     }
 
+    /**
+     * `MifareUltralight` has no page count API, so it is derived from the tag type and, for
+     * NTAG style tags, from the GET VERSION answer. Reads that go past the end of the memory wrap
+     * around, therefore a slightly wrong count only duplicates a few pages at the tail.
+     */
+    private fun pageCount(ultralight: MifareUltralight): Int = when (ultralight.type) {
+        MifareUltralight.TYPE_ULTRALIGHT -> PAGES_ULTRALIGHT
+        MifareUltralight.TYPE_ULTRALIGHT_C -> PAGES_ULTRALIGHT_C
+        else -> versionPageCount(ultralight)
+    }
+
+    private fun versionPageCount(ultralight: MifareUltralight): Int = try {
+        val version = ultralight.transceive(GET_VERSION_COMMAND)
+        when (version.getOrNull(6)?.toInt()?.and(0xFF)) {
+            STORAGE_NTAG213 -> PAGES_NTAG213
+            STORAGE_NTAG215 -> PAGES_NTAG215
+            STORAGE_NTAG216 -> PAGES_NTAG216
+            else -> PAGES_DEFAULT
+        }
+    } catch (e: IOException) {
+        PAGES_DEFAULT
+    }
+
     private fun readMifareClassic(
         tag: Tag,
         record: CardRecord,
@@ -253,8 +277,7 @@ object TagCopier {
                     record.sectorsTotal + " sectors"
             )
         }
-        val keys = MifareKeys.dictionary(store)
-        val working = keys.toMutableList()
+        val working = MifareKeys.dictionary(store).map { Hex.encode(it) }.toMutableList()
         val deadline = System.currentTimeMillis() + CLASSIC_TIME_BUDGET_MS
         try {
             classic.connect()
@@ -408,4 +431,19 @@ object TagCopier {
     private const val READ_ATTEMPTS = 2
     private const val BLOCK_HEX_LENGTH = 32
     private const val ZERO_KEY = "000000000000"
+
+    /** Ultralight memory sizes in pages (4 bytes each). */
+    private const val PAGES_ULTRALIGHT = 16
+    private const val PAGES_ULTRALIGHT_C = 48
+    private const val PAGES_NTAG213 = 45
+    private const val PAGES_NTAG215 = 135
+    private const val PAGES_NTAG216 = 231
+    private const val PAGES_DEFAULT = 48
+
+    /** GET VERSION storage size codes of the NTAG21x family. */
+    private const val STORAGE_NTAG213 = 0x0F
+    private const val STORAGE_NTAG215 = 0x11
+    private const val STORAGE_NTAG216 = 0x13
+
+    private val GET_VERSION_COMMAND = byteArrayOf(0x60)
 }
