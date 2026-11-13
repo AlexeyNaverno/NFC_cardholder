@@ -21,7 +21,7 @@ class Type4TagEmulatorTest {
     fun capabilityContainerIsFifteenBytes() {
         val emulator = Type4TagEmulator(ndef)
         assertEquals(15, emulator.capabilityContainerBytes().size)
-        assertEquals(2 + ndef.size, emulator.ndefFileSize)
+        assertEquals(2 + ndef.size, emulator.ndefFileBytes().size)
     }
 
     @Test
@@ -34,7 +34,7 @@ class Type4TagEmulatorTest {
     @Test
     fun readingWithoutLeReturnsTheWholeFile() {
         val emulator = emulatorWithSelectedNdefFile()
-        // Case 3 READ BINARY has no Le: everything from the offset is returned.
+        // READ BINARY without an Le byte: everything from the offset is returned.
         val command = CommandApdu.parse(Hex.decode("00B00000"))
         val response = emulator.respond(command!!)
         assertTrue(Hex.encode(response).startsWith("0009D101055402656E4869"))
