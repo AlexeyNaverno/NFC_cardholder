@@ -116,6 +116,9 @@ object Apdu {
 
     private const val TAG_APPLICATION_LABEL = 0x4F
 
+    /** Constructed bit of a BER-TLV tag: the value holds nested TLV objects. */
+    private const val TAG_CONSTRUCTED = 0x20
+
     /** Builds `00 A4 04 00 Lc <name> 00` (SELECT by DF name, first or only occurrence). */
     fun selectByName(name: ByteArray): ByteArray {
         val apdu = ByteArray(6 + name.size)
@@ -209,14 +212,17 @@ object Apdu {
         if (depth > MAX_TLV_DEPTH) return
         var i = 0
         while (i < data.size) {
-            var current = data[i].toInt() and 0xFF
+            val first = data[i].toInt() and 0xFF
             i++
             // Padding / free bytes.
-            if (current == 0x00 || current == 0xFF) continue
+            if (first == 0x00 || first == 0xFF) continue
+            var current = first
+            // The constructed bit always lives in the first tag byte, also for two byte tags.
+            val constructed = (first and TAG_CONSTRUCTED) != 0
             // Two byte tags: the low five bits of the first byte are all ones.
-            if ((current and 0x1F) == 0x1F) {
+            if ((first and 0x1F) == 0x1F) {
                 if (i >= data.size) return
-                current = (current shl 8) or (data[i].toInt() and 0xFF)
+                current = (first shl 8) or (data[i].toInt() and 0xFF)
                 i++
             }
             if (i >= data.size) return
@@ -235,7 +241,7 @@ object Apdu {
             val value = data.copyOfRange(i, i + length)
             if (current == tag) out.add(value)
             // Constructed tag: recurse into its content.
-            if ((current and 0x20) != 0) collectTag(value, tag, out, depth + 1)
+            if (constructed) collectTag(value, tag, out, depth + 1)
             i += length
         }
     }

@@ -35,10 +35,15 @@ class EmulationEngine(card: CardRecord?) {
     var taps: Int = 0
         private set
 
-    /** Called when the RF link is lost or another service takes over. */
+    /**
+     * Called when the RF link is lost or another service takes over.
+     *
+     * The caller persists [taps] first: the counters describe a single tap session.
+     */
     fun reset() {
         selectedAid = ""
         exchanges = 0
+        taps = 0
         type4?.reset()
     }
 
