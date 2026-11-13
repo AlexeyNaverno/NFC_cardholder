@@ -43,6 +43,9 @@ jobs:
           grep -A 12 "What went wrong:" /tmp/build.log | head -40 | while IFS= read -r line; do
             echo "::error::${line}"
           done
+          grep -A 3 " FAILED" /tmp/build.log | head -60 | while IFS= read -r line; do
+            echo "::error::${line}"
+          done
           exit 1
 
       - name: Upload debug APK
