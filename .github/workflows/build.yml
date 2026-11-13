@@ -34,7 +34,7 @@ jobs:
           set -o pipefail
           ./gradlew --no-daemon --console=plain assembleDebug testDebugUnitTest lintDebug 2>&1 | tee /tmp/build.log
 
-      - name: Publish diagnostics on failure
+      - name: Surface failures as check annotations
         if: failure()
         env:
           GH_TOKEN: ${{ github.token }}
@@ -44,38 +44,21 @@ jobs:
             echo "== gradle console (tail) =="
             tail -n 150 /tmp/build.log
             echo
-            echo "== junit failures =="
-            python3 - <<'PY' || true
-import glob, xml.etree.ElementTree as ET
-paths = sorted(glob.glob("app/build/test-results/*/*.xml"))
-print("result files:", paths)
-for path in paths:
-    try:
-        root = ET.parse(path).getroot()
-    except Exception as exc:
-        print("cannot parse", path, exc)
-        continue
-    for case in root.iter("testcase"):
-        for failure in list(case.iter("failure")) + list(case.iter("error")):
-            print("%s > %s: %s" % (
-                case.get("classname"),
-                case.get("name"),
-                (failure.get("message") or "").replace("\n", " ")[:400],
-            ))
-            print((failure.text or "")[:2000])
-PY
-          } > /tmp/diag.txt || true
-          echo "::error::diag: build.log lines=$(wc -l < /tmp/build.log) FAILED_hits=$(grep -c ' FAILED' /tmp/build.log || true)"
-          grep -E "^e: |error: | FAILED|Assertion|expected" /tmp/diag.txt | head -40 | while IFS= read -r line; do
+            echo "== failed unit tests =="
+            python3 ci/junit-report.py > /tmp/junit.txt 2>&1 || true
+            cat /tmp/junit.txt
+          } > /tmp/diag.txt 2>&1 || true
+          grep -E "^e: |error: | FAILED|What went wrong" /tmp/build.log | head -40 | while IFS= read -r line; do
             echo "::error::${line}"
           done
+          grep -E "^::error" /tmp/junit.txt 2>/dev/null | head -40 || true
           RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-          BODY="$(printf 'Diagnostics for %s\n\n```text\n%s\n```\n' "$RUN_URL" "$(tail -c 50000 /tmp/diag.txt)")"
+          printf 'Diagnostics for %s\n\n```text\n%s\n```\n' "$RUN_URL" "$(tail -c 48000 /tmp/diag.txt)" > /tmp/body.md
           EXISTING="$(gh issue list --state open --search 'CI diagnostics in:title' --json number --jq '.[0].number' 2>/dev/null || true)"
           if [ -n "$EXISTING" ]; then
-            gh issue comment "$EXISTING" --body "$BODY" || true
+            gh issue comment "$EXISTING" --body-file /tmp/body.md || true
           else
-            gh issue create --title "CI diagnostics" --body "$BODY" || true
+            gh issue create --title "CI diagnostics" --body-file /tmp/body.md || true
           fi
           exit 1
 
