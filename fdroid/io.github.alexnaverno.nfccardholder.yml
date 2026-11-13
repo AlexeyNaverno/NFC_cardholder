@@ -1,0 +1,47 @@
+# Suggested F-Droid metadata. Submit this file to the fdroiddata repository
+# (https://gitlab.com/fdroid/fdroiddata) as
+# metadata/io.github.alexnaverno.nfccardholder.yml once the repository is public and tagged.
+Categories:
+  - Connectivity
+  - Utilities
+License: GPL-3.0-only
+AuthorName: AlexeyNaverno
+AuthorWebSite: https://github.com/AlexeyNaverno
+WebSite: https://github.com/AlexeyNaverno/NFC_cardholder
+SourceCode: https://github.com/AlexeyNaverno/NFC_cardholder
+IssueTracker: https://github.com/AlexeyNaverno/NFC_cardholder/issues
+Changelog: https://github.com/AlexeyNaverno/NFC_cardholder/blob/main/CHANGELOG.md
+
+AutoName: NFC Cardholder
+Summary: Copy NFC cards into slots and transmit them back to a reader
+Description: |-
+  Ten card slots on one screen; each slot copies an NFC tag, transmits the copied
+  card back to a reader through host card emulation, or deletes it.
+  .
+  Copying stores everything the tag hands out: UID, technology list, ATQA and SAK,
+  historical bytes, the NDEF message, every ISO-DEP application that answers a
+  SELECT, and the MIFARE memory a known key unlocks.
+  .
+  Transmitting replays the recorded answers: SELECT by AID returns the stored FCI,
+  recorded command pairs answer verbatim and copied NDEF is served as an NFC Forum
+  Type 4 Tag. Android can only emulate ISO-DEP applications, so MIFARE Classic and
+  similar low level tags are copied for inspection but cannot be transmitted. The
+  phone always presents its own UID; payment cards are not supported.
+  .
+  The app has no network permission, no tracking, no advertising and no third party
+  services. Card data stays in the private storage of the app.
+
+RepoType: git
+Repo: https://github.com/AlexeyNaverno/NFC_cardholder.git
+
+Builds:
+  - versionName: 0.0.1
+    versionCode: 1
+    commit: v0.0.1
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 0.0.1
+CurrentVersionCode: 1

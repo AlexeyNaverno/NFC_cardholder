@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">NFC Cardholder</string>
+    <string name="app_description">Ten slots for copied NFC cards: copy, transmit, delete.</string>
+
+    <!-- Host card emulation, shown by the system NFC settings -->
+    <string name="hce_service_description">Transmits a card copied with NFC Cardholder</string>
+    <string name="hce_aid_group_description">Copied cards</string>
+
+    <!-- Header -->
+    <string name="action_help">About the app</string>
+    <string name="action_nfc_settings">Open the NFC settings</string>
+    <string name="status_no_nfc">This device has no NFC hardware</string>
+    <string name="status_nfc_off">NFC is switched off</string>
+    <string name="status_idle">%1$d of %2$d slots filled - nothing is transmitted</string>
+    <string name="status_active">Transmitting slot %1$d: %2$s</string>
+
+    <!-- Copy panel -->
+    <string name="read_hint_default">Hold the card against the back of the phone</string>
+    <string name="read_hint">Hold a card against the back of the phone to fill slot %1$d</string>
+    <string name="read_working">Reading the card…</string>
+    <string name="progress_start">Reading the tag data…</string>
+    <string name="progress_ndef">Reading NDEF…</string>
+    <string name="progress_iso_dep">Reading ISO-DEP…</string>
+    <string name="progress_probe">Looking for applications (%1$d)…</string>
+    <string name="progress_ultralight">Reading memory, page %1$d…</string>
+    <string name="progress_classic">Unlocking MIFARE sectors (%1$d)…</string>
+    <string name="progress_done">Saving the card…</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Slot row -->
+    <string name="slot_empty_name">Slot %1$d</string>
+    <string name="slot_empty_status">empty</string>
+    <string name="slot_waiting">waiting for a card…</string>
+    <string name="slot_reading">reading…</string>
+    <string name="slot_active_badge">transmitting</string>
+    <string name="slot_not_emulatable">cannot be transmitted</string>
+    <string name="slot_aid_count">%1$d AID</string>
+    <string name="slot_sectors">sectors %1$d/%2$d</string>
+    <string name="action_copy">Copy a card into slot %1$d</string>
+    <string name="action_copy_cancel">Stop copying into slot %1$d</string>
+    <string name="action_apply">Transmit slot %1$d</string>
+    <string name="action_apply_stop">Stop transmitting slot %1$d</string>
+    <string name="action_delete">Delete slot %1$d</string>
+    <string name="action_delete_short">Delete</string>
+    <string name="default_card_name">Card %1$d</string>
+
+    <!-- Messages -->
+    <string name="copied">%1$s copied</string>
+    <string name="deleted">%1$s deleted</string>
+    <string name="emulation_started">The phone now transmits %1$s</string>
+    <string name="emulation_stopped">%1$s is no longer transmitted</string>
+    <string name="err_copy_failed">Copy failed: %1$s</string>
+    <string name="err_slot_empty">The slot is empty</string>
+    <string name="err_no_nfc">This device has no NFC hardware</string>
+    <string name="err_no_hce">This device does not support host card emulation</string>
+    <string name="err_nfc_off">Switch on NFC first</string>
+    <string name="err_reader_mode">Cannot start the NFC reader: %1$s</string>
+    <string name="err_no_settings">The NFC settings could not be opened</string>
+    <string name="err_no_browser">No browser to open the documentation</string>
+    <string name="err_invalid_aid">5 to 16 bytes as an even number of hex digits</string>
+    <string name="err_invalid_hex">Hexadecimal only</string>
+
+    <!-- Dialogs -->
+    <string name="ok">OK</string>
+    <string name="close">Close</string>
+    <string name="save">Save</string>
+    <string name="rename">Rename</string>
+    <string name="add_aid">Add AID</string>
+
+    <string name="dialog_delete_title">Delete the card?</string>
+    <string name="dialog_delete_message">Everything stored for %1$s is removed from the device.</string>
+    <string name="dialog_details_title">Slot %1$d</string>
+    <string name="dialog_rename_title">Card name</string>
+    <string name="dialog_add_aid_title">Add an AID</string>
+    <string name="dialog_add_aid_message">Enter the application identifier that a reader selects and the answer the card gave. Leave the answer empty to reply with 9000 only.</string>
+    <string name="aid_label">AID (hex, 5 to 16 bytes)</string>
+    <string name="aid_hint">D2760000850101</string>
+    <string name="response_label">Answer (hex, optional)</string>
+    <string name="response_hint">6F0BA5095007D27600008501019000</string>
+
+    <string name="dialog_limit_title">This card cannot be transmitted</string>
+    <string name="dialog_limit_message">%1$s\n\nThe data of the card was copied and stays in the slot, but the phone cannot send it back to a reader. See the documentation for the technical reasons.</string>
+    <string name="dialog_limit_details">Documentation</string>
+    <string name="limit_classic">This is a MIFARE Classic card. It uses the proprietary Crypto1 cipher at the ISO 14443-3 layer and Android has no host card emulation for that layer: only ISO-DEP cards can be transmitted.</string>
+    <string name="limit_not_iso_dep">The card speaks %1$s only. Android can transmit ISO-DEP (ISO 14443-4) applications and this tag does not offer one.</string>
+    <string name="limit_no_aid">The card speaks ISO-DEP but no application answered a SELECT. Add the AID by hand in the slot details: it is usually documented by the reader or by the card issuer.</string>
+
+    <string name="dialog_base_aids_title">Transmitting with the base AIDs only</string>
+    <string name="dialog_base_aids_message">%1$s is active, but Android refused to register the AIDs of this card for the app. Only the AIDs declared in the app manifest are routed to it:\n\n%2$s\n\nThis happens when another app is the default handler of the contactless category.</string>
+
+    <string name="dialog_help_title">How it works</string>
+    <string name="help_text">Ten slots on one screen, each with three actions:\n\n1. Copy - hold a card or tag against the back of the phone. The app stores everything the tag hands out: UID, technologies, ATQA and SAK, NDEF, every application that answers a SELECT over ISO-DEP, and the MIFARE memory that a known key unlocks.\n\n2. Transmit - the phone answers an NFC reader as that card (host card emulation). Only one slot can be transmitted at a time, tap the button again to stop.\n\n3. Delete - empties the slot.\n\nTap a slot to see its data, rename it or add an AID by hand.\n\nWHAT THE PHONE CAN TRANSMIT\nAndroid can only emulate ISO-DEP (ISO 14443-4) applications, that is cards a reader talks to with APDU commands. MIFARE Classic, MIFARE Ultralight, NTAG and other low level tags cannot be transmitted: the NFC controller does not expose those modes to apps. Their data is still copied and can be inspected.\n\nThe phone always presents its own UID. Android does not allow changing the UID in card emulation mode, so readers that verify the serial number will reject it.\n\nBank cards are not supported. Their keys live in a secure element and every transaction uses a one time cryptogram, so replaying copied answers cannot work.\n\nCopy and transmit only cards that you own or are allowed to use.</string>
+
+    <!-- Slot details -->
+    <string name="details_empty">The slot is empty. Use the copy button and hold a card against the back of the phone.</string>
+    <string name="details_aids_title">Applications and AIDs</string>
+    <string name="details_no_aids">No AID known for this card.</string>
+    <string name="details_name">Name: %1$s</string>
+    <string name="details_uid">UID: %1$s</string>
+    <string name="details_techs">Technologies: %1$s</string>
+    <string name="details_nfc_a">ATQA: %1$s, SAK: %2$s</string>
+    <string name="details_ats">Historical bytes: %1$s</string>
+    <string name="details_atqb">Higher layer response: %1$s</string>
+    <string name="details_mifare">MIFARE %1$s: %2$d bytes, sectors read %3$d/%4$d</string>
+    <string name="details_ultralight">Ultralight: %1$d pages, %2$d bytes read</string>
+    <string name="details_ndef">NDEF: %1$s</string>
+    <string name="details_created">Copied: %1$s</string>
+    <string name="details_taps">Reader taps answered: %1$d</string>
+    <string name="details_emulation">Transmission: %1$s</string>
+    <string name="details_mode_aid">answers %1$d AID</string>
+    <string name="details_mode_type4">NDEF as an NFC Forum Type 4 Tag</string>
+    <string name="details_mode_none">not possible with this card</string>
+
+</resources>

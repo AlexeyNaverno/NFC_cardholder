@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="screen_padding">16dp</dimen>
+    <dimen name="screen_padding_small">4dp</dimen>
+
+    <dimen name="header_height">64dp</dimen>
+    <dimen name="header_icon">26dp</dimen>
+    <dimen name="read_panel_height">48dp</dimen>
+    <dimen name="progress_size">18dp</dimen>
+    <dimen name="list_padding">4dp</dimen>
+
+    <!-- Ten slots should fit on one screen: 10 x 52dp = 520dp of list. -->
+    <dimen name="slot_height">52dp</dimen>
+    <dimen name="slot_index_width">24dp</dimen>
+    <dimen name="slot_padding_v">6dp</dimen>
+    <dimen name="slot_padding_end">4dp</dimen>
+    <dimen name="slot_corner">12dp</dimen>
+    <dimen name="slot_stroke">1.5dp</dimen>
+
+    <dimen name="icon_button_size">40dp</dimen>
+    <dimen name="icon_size">20dp</dimen>
+
+    <dimen name="text_name">14sp</dimen>
+    <dimen name="text_status">11sp</dimen>
+    <dimen name="text_index">12sp</dimen>
+
+    <dimen name="dialog_padding">20dp</dimen>
+    <dimen name="dialog_padding_small">8dp</dimen>
+    <dimen name="dialog_label_top">14dp</dimen>
+
+</resources>

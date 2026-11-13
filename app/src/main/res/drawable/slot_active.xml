@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Highlight of the slot that the phone is transmitting right now. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="@dimen/slot_corner" />
+    <solid android:color="@color/slot_active_fill" />
+    <stroke
+        android:width="@dimen/slot_stroke"
+        android:color="@color/slot_active_stroke" />
+</shape>

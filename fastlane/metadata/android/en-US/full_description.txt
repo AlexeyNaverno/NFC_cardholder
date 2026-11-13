@@ -1,0 +1,13 @@
+NFC Cardholder keeps ten card slots on one screen. Every slot has three actions: copy, transmit and delete.
+
+COPY: hold a card or tag against the back of the phone. The app stores everything the tag hands out: UID, technology list, ATQA and SAK, historical bytes, the NDEF message and its text, every ISO-DEP application that answers a SELECT command, and the MIFARE memory that a known key unlocks (Classic sectors and Ultralight pages).
+
+TRANSMIT: the phone answers an NFC reader as the copied card through host card emulation. Recorded answers are replayed: SELECT by AID returns the stored FCI, recorded command pairs answer verbatim, and copied NDEF data is served as an NFC Forum Type 4 Tag. Only one slot is transmitted at a time.
+
+DELETE: the slot and all of its data are removed from the device.
+
+Tap a slot to inspect the raw data, rename the card or add an AID by hand.
+
+Limits that come from Android itself: only ISO-DEP (ISO 14443-4) applications can be emulated, so MIFARE Classic and similar low level tags are copied but cannot be transmitted. The phone always presents its own UID, because Android does not allow changing it in emulation mode. Payment cards are not supported at all.
+
+The app needs no internet permission and contains no tracking, no advertising and no third party services. Copied card data stays in the private storage of the app and is never backed up to the cloud. Copy and transmit only cards that you own or are allowed to use.
