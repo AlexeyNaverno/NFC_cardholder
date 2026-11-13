@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: build-${{ github.ref }}
@@ -36,30 +35,12 @@ jobs:
 
       - name: Surface failures as check annotations
         if: failure()
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           touch /tmp/build.log
-          {
-            echo "== gradle console (tail) =="
-            tail -n 150 /tmp/build.log
-            echo
-            echo "== failed unit tests =="
-            python3 ci/junit-report.py > /tmp/junit.txt 2>&1 || true
-            cat /tmp/junit.txt
-          } > /tmp/diag.txt 2>&1 || true
           grep -E "^e: |error: | FAILED|What went wrong" /tmp/build.log | head -40 | while IFS= read -r line; do
             echo "::error::${line}"
           done
-          grep -E "^::error" /tmp/junit.txt 2>/dev/null | head -40 || true
-          RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-          printf 'Diagnostics for %s\n\n```text\n%s\n```\n' "$RUN_URL" "$(tail -c 48000 /tmp/diag.txt)" > /tmp/body.md
-          EXISTING="$(gh issue list --state open --search 'CI diagnostics in:title' --json number --jq '.[0].number' 2>/dev/null || true)"
-          if [ -n "$EXISTING" ]; then
-            gh issue comment "$EXISTING" --body-file /tmp/body.md || true
-          else
-            gh issue create --title "CI diagnostics" --body-file /tmp/body.md || true
-          fi
+          python3 ci/junit-report.py || true
           exit 1
 
       - name: Upload test reports on failure
