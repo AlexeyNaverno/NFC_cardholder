@@ -46,6 +46,20 @@ jobs:
           grep -A 3 " FAILED" /tmp/build.log | head -60 | while IFS= read -r line; do
             echo "::error::${line}"
           done
+          python3 - <<'PY' || true
+          import glob, xml.etree.ElementTree as ET
+          for path in sorted(glob.glob("app/build/test-results/testDebugUnitTest/*.xml")) + \
+                      sorted(glob.glob("app/build/outputs/**/test-results/**/*.xml", recursive=True)):
+              try:
+                  root = ET.parse(path).getroot()
+              except Exception:
+                  continue
+              for case in root.iter("testcase"):
+                  for failure in list(case.iter("failure")) + list(case.iter("error")):
+                      name = "%s > %s" % (case.get("classname"), case.get("name"))
+                      message = (failure.get("message") or "").replace("\n", " ")
+                      print("::error::%s :: %s" % (name, message[:300]))
+          PY
           exit 1
 
       - name: Upload debug APK

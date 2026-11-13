@@ -86,11 +86,15 @@ class ApduTest {
 
     @Test
     fun validatesAidLength() {
+        // Five to sixteen bytes, that is ten to thirty two hex characters.
         assertFalse(Apdu.isValidAid("A000"))
-        assertTrue(Apdu.isValidAid("A00000"))
+        assertFalse(Apdu.isValidAid("A0000000"))
+        assertTrue(Apdu.isValidAid("A000000000"))
         assertTrue(Apdu.isValidAid("D2760000850101"))
-        assertFalse(Apdu.isValidAid("D27600008501010203040506070809"))
+        assertTrue(Apdu.isValidAid("D27600008501010203040506070809"))
+        assertFalse(Apdu.isValidAid("D2760000850101020304050607080910"))
         assertFalse(Apdu.isValidAid("ZZ760000850101"))
+        assertFalse(Apdu.isValidAid("D276000085010"))
         assertFalse(Apdu.isValidAid(null))
     }
 }
