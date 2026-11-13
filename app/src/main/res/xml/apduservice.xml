@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Static AID registration for the host card emulation service.
+
+    Android matches AIDs exactly, so this list is a base set of well known
+    application identifiers. AIDs that are discovered on (or entered for) a
+    copied card are registered at runtime on top of this list by
+    EmulationControl.activate().
+
+    Every AID must be 5..16 bytes written as an even number of hex digits.
+-->
+<host-apdu-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/hce_service_description"
+    android:requireDeviceUnlock="false">
+
+    <aid-group
+        android:category="other"
+        android:description="@string/hce_aid_group_description">
+        <!-- 2PAY.SYS.DDF01 - proximity payment system environment -->
+        <aid-filter android:name="325041592E5359532E4444463031" />
+        <!-- 1PAY.SYS.DDF01 - payment system environment (also used by Calypso transit cards) -->
+        <aid-filter android:name="315041592E5359532E4444463031" />
+        <!-- NFC Forum / DESFire style application -->
+        <aid-filter android:name="D2760000850100" />
+        <!-- NFC Forum Type 4 Tag application (NDEF over ISO-DEP) -->
+        <aid-filter android:name="D2760000850101" />
+        <!-- Proprietary AID of this app ("NFCARDH"), handy for testing with a reader -->
+        <aid-filter android:name="F04E464341524448" />
+    </aid-group>
+
+</host-apdu-service>

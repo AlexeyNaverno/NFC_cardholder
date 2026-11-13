@@ -1,0 +1,25 @@
+# Gradle / Android Studio
+.gradle/
+build/
+app/build/
+local.properties
+keystore.properties
+*.iml
+.idea/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Signing material must never be committed
+*.jks
+*.keystore
+.secrets/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+
+# Python tooling used for asset generation
+tools/__pycache__/
+.venv/

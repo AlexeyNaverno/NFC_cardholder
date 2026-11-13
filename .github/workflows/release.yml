@@ -1,0 +1,90 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release, for example v0.0.1"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish the release APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - name: Resolve the tag and the version
+        id: meta
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.tag }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+          VERSION="${TAG#v}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Verify that the tag matches the version in the build files
+        run: |
+          VERSION="${{ steps.meta.outputs.version }}"
+          grep -q "versionName = \"$VERSION\"" app/build.gradle.kts
+          grep -q "^## \[$VERSION\]" CHANGELOG.md
+          echo "Tag ${{ steps.meta.outputs.tag }} matches versionName $VERSION"
+
+      - name: Prepare release signing
+        run: bash ci/prepare-signing.sh
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+
+      - name: Build the release APK and run the unit tests
+        run: ./gradlew --no-daemon assembleRelease testReleaseUnitTest
+
+      - name: Collect the artifacts
+        run: |
+          VERSION="${{ steps.meta.outputs.version }}"
+          mkdir -p dist
+          cp app/build/outputs/apk/release/app-release.apk "dist/NFC-Cardholder-${VERSION}.apk"
+          (cd dist && sha256sum ./* > SHA256SUMS.txt)
+          ls -l dist
+
+      - name: Write the release notes
+        run: python3 ci/release-notes.py "${{ steps.meta.outputs.version }}" > dist/NOTES.md
+
+      - name: Publish the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ steps.meta.outputs.tag }}"
+          VERSION="${{ steps.meta.outputs.version }}"
+          PRERELEASE_FLAG=""
+          case "$VERSION" in
+            0.*|*-*|*alpha*|*beta*|*rc*) PRERELEASE_FLAG="--prerelease" ;;
+          esac
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release delete "$TAG" --yes --cleanup-tag || true
+          fi
+          gh release create "$TAG" $PRERELEASE_FLAG \
+            --title "NFC Cardholder ${VERSION}" \
+            --notes-file dist/NOTES.md \
+            "dist/NFC-Cardholder-${VERSION}.apk" \
+            dist/SHA256SUMS.txt

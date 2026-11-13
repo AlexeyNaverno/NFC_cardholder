@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">NFC-картхолдер</string>
+    <string name="app_description">Десять слотов для скопированных NFC-карт: копировать, передать, удалить.</string>
+
+    <!-- Эмуляция карт, текст виден в системных настройках NFC -->
+    <string name="hce_service_description">Передаёт карту, скопированную в NFC-картхолдере</string>
+    <string name="hce_aid_group_description">Скопированные карты</string>
+
+    <!-- Шапка -->
+    <string name="action_help">О приложении</string>
+    <string name="action_nfc_settings">Открыть настройки NFC</string>
+    <string name="status_no_nfc">На устройстве нет NFC</string>
+    <string name="status_nfc_off">NFC выключен</string>
+    <string name="status_idle">Заполнено слотов: %1$d из %2$d, ничего не передаётся</string>
+    <string name="status_active">Передаётся слот %1$d: %2$s</string>
+
+    <!-- Панель копирования -->
+    <string name="read_hint_default">Поднесите карту к задней панели телефона</string>
+    <string name="read_hint">Поднесите карту к задней панели телефона, чтобы заполнить слот %1$d</string>
+    <string name="read_working">Чтение карты…</string>
+    <string name="progress_start">Чтение данных метки…</string>
+    <string name="progress_ndef">Чтение NDEF…</string>
+    <string name="progress_iso_dep">Чтение ISO-DEP…</string>
+    <string name="progress_probe">Поиск приложений (%1$d)…</string>
+    <string name="progress_ultralight">Чтение памяти, страница %1$d…</string>
+    <string name="progress_classic">Подбор ключей MIFARE, сектор %1$d…</string>
+    <string name="progress_done">Сохранение карты…</string>
+    <string name="cancel">Отмена</string>
+
+    <!-- Строка слота -->
+    <string name="slot_empty_name">Слот %1$d</string>
+    <string name="slot_empty_status">пусто</string>
+    <string name="slot_waiting">ожидает карту…</string>
+    <string name="slot_reading">чтение…</string>
+    <string name="slot_active_badge">передаётся</string>
+    <string name="slot_not_emulatable">нельзя передать</string>
+    <string name="slot_aid_count">AID: %1$d</string>
+    <string name="slot_sectors">секторы %1$d/%2$d</string>
+    <string name="action_copy">Скопировать карту в слот %1$d</string>
+    <string name="action_copy_cancel">Прервать копирование в слот %1$d</string>
+    <string name="action_apply">Передавать слот %1$d</string>
+    <string name="action_apply_stop">Перестать передавать слот %1$d</string>
+    <string name="action_delete">Удалить слот %1$d</string>
+    <string name="action_delete_short">Удалить</string>
+    <string name="default_card_name">Карта %1$d</string>
+
+    <!-- Сообщения -->
+    <string name="copied">%1$s скопирована</string>
+    <string name="deleted">%1$s удалена</string>
+    <string name="emulation_started">Телефон передаёт: %1$s</string>
+    <string name="emulation_stopped">%1$s больше не передаётся</string>
+    <string name="err_copy_failed">Не удалось скопировать: %1$s</string>
+    <string name="err_slot_empty">Слот пуст</string>
+    <string name="err_no_nfc">На устройстве нет NFC</string>
+    <string name="err_no_hce">Устройство не поддерживает эмуляцию карт (HCE)</string>
+    <string name="err_nfc_off">Сначала включите NFC</string>
+    <string name="err_reader_mode">Не удалось включить режим чтения: %1$s</string>
+    <string name="err_no_settings">Не удалось открыть настройки NFC</string>
+    <string name="err_no_browser">Нечем открыть документацию</string>
+    <string name="err_invalid_aid">От 5 до 16 байт, чётное число шестнадцатеричных цифр</string>
+    <string name="err_invalid_hex">Только шестнадцатеричные символы</string>
+
+    <!-- Диалоги -->
+    <string name="ok">ОК</string>
+    <string name="close">Закрыть</string>
+    <string name="save">Сохранить</string>
+    <string name="rename">Переименовать</string>
+    <string name="add_aid">Добавить AID</string>
+
+    <string name="dialog_delete_title">Удалить карту?</string>
+    <string name="dialog_delete_message">Все данные карты «%1$s» будут удалены с устройства.</string>
+    <string name="dialog_details_title">Слот %1$d</string>
+    <string name="dialog_rename_title">Название карты</string>
+    <string name="dialog_add_aid_title">Добавить AID</string>
+    <string name="dialog_add_aid_message">Укажите идентификатор приложения, который выбирает считыватель, и ответ карты. Если ответ оставить пустым, телефон ответит только 9000.</string>
+    <string name="aid_label">AID (hex, от 5 до 16 байт)</string>
+    <string name="aid_hint">D2760000850101</string>
+    <string name="response_label">Ответ (hex, необязательно)</string>
+    <string name="response_hint">6F0BA5095007D27600008501019000</string>
+
+    <string name="dialog_limit_title">Такую карту передать нельзя</string>
+    <string name="dialog_limit_message">%1$s\n\nДанные карты скопированы и остались в слоте, но телефон не может передать их считывателю. Технические причины описаны в документации.</string>
+    <string name="dialog_limit_details">Документация</string>
+    <string name="limit_classic">Это карта MIFARE Classic. Она работает на проприетарном шифре Crypto1 на уровне ISO 14443-3, а Android умеет эмулировать только уровень ISO-DEP: такие карты телефон передать не может.</string>
+    <string name="limit_not_iso_dep">Карта поддерживает только %1$s. Android умеет передавать приложения ISO-DEP (ISO 14443-4), а эта метка их не предлагает.</string>
+    <string name="limit_no_aid">Карта поддерживает ISO-DEP, но ни одно приложение не ответило на SELECT. Добавьте AID вручную в свойствах слота: обычно его знает считыватель или эмитент карты.</string>
+
+    <string name="dialog_base_aids_title">Передача только с базовыми AID</string>
+    <string name="dialog_base_aids_message">Слот «%1$s» активен, но Android отказался зарегистрировать AID этой карты для приложения. К нему маршрутизируются только AID из манифеста:\n\n%2$s\n\nТак бывает, когда обработчиком бесконтактной категории по умолчанию назначено другое приложение.</string>
+
+    <string name="dialog_help_title">Как это работает</string>
+    <string name="help_text">Десять слотов на одном экране, у каждого три действия:\n\n1. Копировать - поднесите карту или метку к задней панели телефона. Приложение сохранит всё, что карта отдаёт: UID, технологии, ATQA и SAK, NDEF, все приложения, отвечающие на SELECT по ISO-DEP, и память MIFARE, которую открыл известный ключ.\n\n2. Передать - телефон будет отвечать считывателю как эта карта (эмуляция HCE). Одновременно передаётся только один слот; повторное нажатие останавливает передачу.\n\n3. Удалить - очищает слот.\n\nНажатие на строку слота показывает его данные, позволяет переименовать карту и добавить AID вручную.\n\nЧТО ТЕЛЕФОН МОЖЕТ ПЕРЕДАТЬ\nAndroid умеет эмулировать только приложения ISO-DEP (ISO 14443-4), то есть карты, с которыми считыватель общается APDU-командами. MIFARE Classic, MIFARE Ultralight, NTAG и другие низкоуровневые метки передать нельзя: NFC-контроллер не открывает эти режимы приложениям. Их данные копируются и доступны для просмотра.\n\nТелефон всегда предъявляет собственный UID. В режиме эмуляции Android не позволяет менять UID, поэтому считыватели, проверяющие серийный номер, карту отклонят.\n\nБанковские карты не поддерживаются. Их ключи хранятся в защищённом элементе, а каждая операция использует одноразовый криптограмм, поэтому повтор сохранённых ответов не сработает.\n\nКопируйте и передавайте только те карты, которыми владеете или на использование которых есть разрешение.</string>
+
+    <!-- Свойства слота -->
+    <string name="details_empty">Слот пуст. Нажмите кнопку копирования и поднесите карту к задней панели телефона.</string>
+    <string name="details_aids_title">Приложения и AID</string>
+    <string name="details_no_aids">Для этой карты AID неизвестен.</string>
+    <string name="details_name">Название: %1$s</string>
+    <string name="details_uid">UID: %1$s</string>
+    <string name="details_techs">Технологии: %1$s</string>
+    <string name="details_nfc_a">ATQA: %1$s, SAK: %2$s</string>
+    <string name="details_ats">Historical bytes: %1$s</string>
+    <string name="details_atqb">Ответ верхнего уровня: %1$s</string>
+    <string name="details_mifare">MIFARE %1$s: %2$d байт, прочитано секторов %3$d/%4$d</string>
+    <string name="details_ultralight">Ultralight: страниц %1$d, прочитано %2$d байт</string>
+    <string name="details_ndef">NDEF: %1$s</string>
+    <string name="details_created">Скопирована: %1$s</string>
+    <string name="details_taps">Отвечено считывателям: %1$d</string>
+    <string name="details_emulation">Передача: %1$s</string>
+    <string name="details_mode_aid">отвечает на AID: %1$d</string>
+    <string name="details_mode_type4">NDEF как метка NFC Forum Type 4</string>
+    <string name="details_mode_none">для этой карты невозможна</string>
+
+</resources>

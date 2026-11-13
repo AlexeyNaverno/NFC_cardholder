@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Brand, dark theme: tones are inverted so that they stay readable on dark surfaces. -->
+    <color name="brand_primary">#4FD8DF</color>
+    <color name="brand_on_primary">#00373A</color>
+    <color name="brand_primary_container">#004F53</color>
+    <color name="brand_on_primary_container">#9CF1F6</color>
+
+    <color name="status_error">#F2B8B5</color>
+    <color name="status_active">#4FD8DF</color>
+    <color name="status_muted">#C0C6C6</color>
+
+    <color name="slot_name_filled">#E1E3E3</color>
+    <color name="slot_name_empty">#8A9090</color>
+    <color name="slot_name_active">#4FD8DF</color>
+    <color name="slot_status">#C0C6C6</color>
+    <color name="slot_index">#8A9090</color>
+
+    <color name="slot_action_enabled">#B0CBCD</color>
+    <color name="slot_action_active">#4FD8DF</color>
+    <color name="slot_action_disabled">#5A5E5E</color>
+
+    <color name="slot_active_stroke">#4FD8DF</color>
+    <color name="slot_active_fill">#264FD8DF</color>
+    <color name="slot_pending_stroke">#FFB95C</color>
+    <color name="slot_pending_fill">#26FFB95C</color>
+
+</resources>

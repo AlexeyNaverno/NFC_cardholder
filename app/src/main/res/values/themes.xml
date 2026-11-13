@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+        Material 3 day/night theme. Only the brand colour roles are overridden, everything else
+        comes from the Material Components baseline and follows the system light/dark setting.
+    -->
+    <style name="Theme.NfcCardholder" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/brand_primary</item>
+        <item name="colorOnPrimary">@color/brand_on_primary</item>
+        <item name="colorPrimaryContainer">@color/brand_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/brand_on_primary_container</item>
+    </style>
+
+</resources>

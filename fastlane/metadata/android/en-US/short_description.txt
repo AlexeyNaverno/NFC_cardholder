@@ -1,0 +1,1 @@
+Ten slots for NFC cards: copy a tag, transmit it back to a reader, delete it.
