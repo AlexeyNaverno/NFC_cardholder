@@ -51,7 +51,9 @@ class SeDiagnostics(private val context: Context) {
             }
         }, TIMEOUT_MS)
 
-        SEService(context, executor) { service ->
+        var created: SEService? = null
+        created = SEService(context, executor) {
+            val service = created ?: return@SEService
             val report = probe(service)
             runCatching { service.shutdown() }
             executor.shutdown()
@@ -73,8 +75,7 @@ class SeDiagnostics(private val context: Context) {
                 channel = try {
                     // A basic channel without an AID selects the default applet; opening and
                     // closing it is the deepest probe that needs no credentials.
-                    val opened = session.openBasicChannel(null)
-                    runCatching { opened.close() }
+                    session.openBasicChannel(null)?.close()
                     CHANNEL_OK
                 } catch (e: Exception) {
                     reason(e)
