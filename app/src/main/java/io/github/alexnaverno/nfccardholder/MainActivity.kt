@@ -1,6 +1,9 @@
 package io.github.alexnaverno.nfccardholder
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
+import android.graphics.Typeface
 import android.net.Uri
 import android.nfc.NfcAdapter
 import android.nfc.Tag
@@ -24,6 +27,8 @@ import io.github.alexnaverno.nfccardholder.core.Apdu
 import io.github.alexnaverno.nfccardholder.core.Hex
 import io.github.alexnaverno.nfccardholder.databinding.ActivityMainBinding
 import io.github.alexnaverno.nfccardholder.databinding.DialogCardDetailsBinding
+import io.github.alexnaverno.nfccardholder.diag.ListenUidPatch
+import io.github.alexnaverno.nfccardholder.diag.SeDiagnostics
 import io.github.alexnaverno.nfccardholder.hce.EmulationAids
 import io.github.alexnaverno.nfccardholder.hce.EmulationControl
 import io.github.alexnaverno.nfccardholder.hce.Type4TagEmulator
@@ -76,6 +81,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnCancel.setOnClickListener { stopCopyMode() }
         binding.btnNfcSettings.setOnClickListener { openNfcSettings() }
+        binding.btnSeDiag.setOnClickListener { showSeDiagnostics() }
         binding.btnHelp.setOnClickListener { showHelp() }
 
         refresh()
@@ -340,6 +346,7 @@ class MainActivity : AppCompatActivity() {
         if (record == null) {
             view.btnRename.isEnabled = false
             view.btnAddAid.isEnabled = false
+            view.btnAdbPatch.isEnabled = false
         } else {
             view.btnRename.setOnClickListener {
                 promptRename(slot, record) {
@@ -353,8 +360,78 @@ class MainActivity : AppCompatActivity() {
                     refresh()
                 }
             }
+            // The listen UID patch needs a UID; NDEF-only tags have none.
+            view.btnAdbPatch.isEnabled = record.uid.isNotEmpty()
+            view.btnAdbPatch.setOnClickListener { showAdbPatch(slot, record) }
         }
         dialog.show()
+    }
+
+    // ------------------------------------------------------------ adb recipe and SE diagnostics
+
+    /** Shows the ready to run `adb` recipe that patches the NFC-A listen UID to this card. */
+    private fun showAdbPatch(slot: Int, record: CardRecord) {
+        val script = ListenUidPatch.script(record.uid, displayName(slot, record))
+        val view = monospaceView(script)
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.adb_patch_title, slot + 1))
+            .setView(view)
+            .setPositiveButton(R.string.adb_patch_copy) { _, _ ->
+                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                clipboard.setPrimaryClip(ClipData.newPlainText(getString(R.string.app_name), script))
+                toast(getString(R.string.adb_patch_copied))
+            }
+            .setNegativeButton(R.string.close, null)
+            .show()
+    }
+
+    /** Lists the secure element terminals of the device through the Open Mobile API. */
+    private fun showSeDiagnostics() {
+        val view = monospaceView(getString(R.string.se_diag_running))
+        view.typeface = null
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.se_diag_title)
+            .setView(view)
+            .setPositiveButton(R.string.close, null)
+            .show()
+        SeDiagnostics(this).run { report ->
+            if (isFinishing || isDestroyed) return@run
+            view.text = formatSeReport(report)
+        }
+    }
+
+    private fun formatSeReport(report: SeDiagnostics.Report): String {
+        if (!report.supported) return getString(R.string.se_diag_unsupported)
+        val lines = mutableListOf<String>()
+        if (report.timedOut) lines.add(getString(R.string.se_diag_timeout))
+        if (report.terminals.isEmpty()) lines.add(getString(R.string.se_diag_none))
+        for (terminal in report.terminals) {
+            lines.add(
+                getString(
+                    R.string.se_diag_terminal,
+                    terminal.name,
+                    getString(if (terminal.sessionOpened) R.string.se_diag_ok else R.string.se_diag_fail),
+                    terminal.basicChannel ?: "-"
+                )
+            )
+        }
+        lines.add("")
+        lines.add(getString(R.string.se_diag_note))
+        return lines.joinToString("\n")
+    }
+
+    /** A scrollable, selectable, monospace text view for dialog bodies. */
+    private fun monospaceView(content: String): TextView {
+        val padding = resources.getDimensionPixelSize(R.dimen.dialog_padding)
+        val scroll = ScrollView(this)
+        val text = TextView(this)
+        text.typeface = Typeface.MONOSPACE
+        text.setTextIsSelectable(true)
+        text.setPadding(padding, padding, padding, padding)
+        text.text = content
+        text.setTextAppearance(android.R.style.TextAppearance_Small)
+        scroll.addView(text)
+        return text
     }
 
     private fun renderAids(record: CardRecord?): String {

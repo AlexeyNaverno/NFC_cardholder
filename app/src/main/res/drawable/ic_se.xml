@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Opens the secure element diagnostics. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <path
+        android:fillColor="#FF000000"
+        android:fillType="evenOdd"
+        android:pathData="M7,7h10v10h-10zM9.5,9.5h5v5h-5zM4,9h2v2h-2zM4,13h2v2h-2zM18,9h2v2h-2zM18,13h2v2h-2zM9,4h2v2h-2zM13,4h2v2h-2zM9,18h2v2h-2zM13,18h2v2h-2z" />
+
+</vector>

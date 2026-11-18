@@ -59,6 +59,14 @@
                 android:text="@string/add_aid" />
         </LinearLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAdbPatch"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dialog_label_top"
+            android:text="@string/adb_patch" />
+
     </LinearLayout>
 
 </ScrollView>
