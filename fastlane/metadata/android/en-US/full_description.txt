@@ -8,6 +8,8 @@ DELETE: the slot and all of its data are removed from the device.
 
 Tap a slot to inspect the raw data, rename the card or add an AID by hand.
 
+POWER TOOLS: the slot details dialog generates a ready to run adb recipe that patches the NFC controller listen UID (LA_NFCID1) to the UID of the copied card, for readers that compare the UID only; it is meant to be executed from a computer with adb root, the app never writes system files itself. A diagnostics screen lists the secure element terminals (eSE, SIM) exposed through the Open Mobile API and explains which part of MIFARE Classic emulation stays under OEM access rules.
+
 Limits that come from Android itself: only ISO-DEP (ISO 14443-4) applications can be emulated, so MIFARE Classic and similar low level tags are copied but cannot be transmitted. The phone always presents its own UID, because Android does not allow changing it in emulation mode. Payment cards are not supported at all.
 
 The app needs no internet permission and contains no tracking, no advertising and no third party services. Copied card data stays in the private storage of the app and is never backed up to the cloud. Copy and transmit only cards that you own or are allowed to use.

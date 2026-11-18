@@ -113,4 +113,25 @@
     <string name="details_mode_type4">NDEF как метка NFC Forum Type 4</string>
     <string name="details_mode_none">для этой карты невозможна</string>
 
+    <!-- adb-рецепт для listen UID -->
+    <string name="adb_patch">adb-патч (listen UID)</string>
+    <string name="adb_patch_title">adb-рецепт для слота %1$d</string>
+    <string name="adb_patch_copy">Скопировать</string>
+    <string name="adb_patch_copied">adb-рецепт в буфере обмена</string>
+
+    <!-- диагностика secure element -->
+    <string name="action_se_diag">Диагностика secure element</string>
+    <string name="se_diag_title">Терминалы secure element</string>
+    <string name="se_diag_running">Проверяем secure element…</string>
+    <string name="se_diag_unsupported">Open Mobile API требует Android 9 (API 28) или новее.</string>
+    <string name="se_diag_none">Система не сообщает ни одного терминала secure element.</string>
+    <string name="se_diag_timeout">Служба secure element не ответила вовремя.</string>
+    <string name="se_diag_terminal">%1$s: сессия %2$s, базовый канал: %3$s</string>
+    <string name="se_diag_ok">ок</string>
+    <string name="se_diag_fail">не удалась</string>
+    <string name="se_diag_note">Терминал eSE или SIM — это аппаратный путь, которым OEM-кошельки
+        эмулируют карты MIFARE Classic. Пустит ли его MIFARE-апплет вашу карту, решают правила
+        доступа апплета, а не это приложение. Для считывателей, сравнивающих только UID, используйте
+        adb-рецепт в деталях слота: он правит listen UID NFC-контроллера.</string>
+
 </resources>

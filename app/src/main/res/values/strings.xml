@@ -113,4 +113,25 @@
     <string name="details_mode_type4">NDEF as an NFC Forum Type 4 Tag</string>
     <string name="details_mode_none">not possible with this card</string>
 
+    <!-- adb recipe for the listen UID -->
+    <string name="adb_patch">adb patch (listen UID)</string>
+    <string name="adb_patch_title">adb recipe for slot %1$d</string>
+    <string name="adb_patch_copy">Copy</string>
+    <string name="adb_patch_copied">The adb recipe is in the clipboard</string>
+
+    <!-- secure element diagnostics -->
+    <string name="action_se_diag">Secure element diagnostics</string>
+    <string name="se_diag_title">Secure element terminals</string>
+    <string name="se_diag_running">Probing the secure element…</string>
+    <string name="se_diag_unsupported">The Open Mobile API needs Android 9 (API 28) or newer.</string>
+    <string name="se_diag_none">The system reports no secure element terminals.</string>
+    <string name="se_diag_timeout">The secure element service did not answer in time.</string>
+    <string name="se_diag_terminal">%1$s: session %2$s, basic channel: %3$s</string>
+    <string name="se_diag_ok">ok</string>
+    <string name="se_diag_fail">failed</string>
+    <string name="se_diag_note">An eSE or SIM terminal is the hardware path OEM wallets use to emulate
+        MIFARE Classic cards. Whether its MIFARE applet accepts your card is decided by the applet
+        access rules, not by this app. For readers that compare the UID only, use the adb recipe in
+        the slot details: it patches the listen UID of the NFC controller.</string>
+
 </resources>

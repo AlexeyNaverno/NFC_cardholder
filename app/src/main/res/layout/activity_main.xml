@@ -53,6 +53,15 @@
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSeDiag"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="@dimen/icon_button_size"
+            android:layout_height="@dimen/icon_button_size"
+            android:contentDescription="@string/action_se_diag"
+            app:icon="@drawable/ic_se"
+            app:iconSize="@dimen/icon_size" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnHelp"
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="@dimen/icon_button_size"
