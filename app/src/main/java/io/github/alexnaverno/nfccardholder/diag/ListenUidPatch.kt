@@ -51,7 +51,8 @@ object ListenUidPatch {
         }
         val length = hex2(bytes.size)
         val value = bytes.joinToString(", ") { hex2(it) }
-        val tlv = "$length, $value"
+        // The replacement keeps the NCI parameter tag: 33 <length> <uid bytes>.
+        val tlv = "33, $length, $value"
         val sedPattern = "33, *$length, *" + bytes.indices.drop(1)
             .joinToString(", *") { "[0-9A-Fa-f]{2}" }
         val grepPattern = ("33, *" + bytes.joinToString(", *") { hex2(it) })
